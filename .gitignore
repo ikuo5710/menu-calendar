@@ -1,6 +1,3 @@
-# Beads data (tracked on beads branch, not main)
-.beads/*.jsonl
-
 # OS
 .DS_Store
 Thumbs.db
