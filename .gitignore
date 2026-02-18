@@ -10,3 +10,6 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# Beads
+.beads/export-state/
