@@ -1,0 +1,18 @@
+{
+  "icons": {
+    "karaage": "assets/icons/karaage.png",
+    "ebi_fry": "assets/icons/ebi_fry.png",
+    "curry_udon": "assets/icons/curry_udon.png",
+    "curry_rice": "assets/icons/curry_rice.png",
+    "chirashi": "assets/icons/chirashi.png"
+  },
+  "sounds": {
+    "button_click": "assets/sounds/button_click.wav",
+    "grab": "assets/sounds/grab.wav",
+    "drop": "assets/sounds/drop.wav",
+    "warning": "assets/sounds/warning.wav"
+  },
+  "fonts": {
+    "main": "assets/fonts/main.ttf"
+  }
+}
