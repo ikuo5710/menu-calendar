@@ -6,7 +6,8 @@ import pygame
 
 from src.asset_manager import AssetManager
 from src.model.board import Board
-from src.ui.grid import Grid
+from src.model.rules import check_all
+from src.ui.grid import Grid, cell_rect
 from src.ui.palette import Palette
 from src.ui.timer import Timer
 from src.ui.drag_drop import DragDrop
@@ -21,6 +22,10 @@ from src.constants import (
     COLOR_HEADER_BG,
     COLOR_ACCENT_ORANGE,
     COLOR_COUNTER_TEXT,
+    COLOR_HIGHLIGHT_RED,
+    COLOR_HIGHLIGHT_BLUE,
+    COLOR_HIGHLIGHT_ORANGE,
+    COLOR_HIGHLIGHT_PURPLE,
     COLOR_BTN_BACK_BG,
     COLOR_BTN_BACK_TEXT,
     COLOR_BTN_RESET_BG,
@@ -28,6 +33,17 @@ from src.constants import (
     COLOR_BTN_DONE_BG,
     COLOR_BTN_DONE_TEXT,
 )
+
+# 違反種別→枠色のマッピング
+_VIOLATION_COLORS = {
+    "duplicate": COLOR_HIGHLIGHT_RED,
+    "chirashi": COLOR_HIGHLIGHT_BLUE,
+    "fried": COLOR_HIGHLIGHT_ORANGE,
+    "curry": COLOR_HIGHLIGHT_PURPLE,
+}
+
+# 警告点滅の持続時間(フレーム数)
+_FLASH_DURATION = 20
 
 
 class PlayScreen:
@@ -83,12 +99,16 @@ class PlayScreen:
         )
 
         self._locked = False
+        self._flash_cells: dict[tuple[int, int], tuple[tuple[int, int, int], int]] = {}
+        self._prev_violation_cells: set[tuple[int, int]] = set()
 
     def start(self) -> None:
         """ゲーム開始時にリセット。"""
         self.board.reset()
         self.timer.start()
         self._locked = False
+        self._flash_cells.clear()
+        self._prev_violation_cells.clear()
 
     def handle_event(self, event: pygame.event.Event) -> str | None:
         """イベント処理。戻り値: 'done', 'back', 'timeout', None。"""
@@ -110,15 +130,40 @@ class PlayScreen:
 
         # D&D
         result = self.drag_drop.handle_event(event)
-        if result == "placed" or result == "moved":
-            self.assets.play_sound("drop")
-        elif result == "removed":
-            pass
+        if result in ("placed", "moved", "removed"):
+            if result != "removed":
+                self.assets.play_sound("drop")
+            self._check_realtime_warnings()
 
         return None
 
+    def _check_realtime_warnings(self) -> None:
+        """配置直後に違反をチェックし、新規違反セルを点滅させる。"""
+        violations = check_all(self.board)
+        current_cells: set[tuple[int, int]] = set()
+        for v in violations.violations:
+            color = _VIOLATION_COLORS.get(v.kind, COLOR_HIGHLIGHT_RED)
+            for cell in v.cells:
+                current_cells.add(cell)
+                if cell not in self._prev_violation_cells:
+                    self._flash_cells[cell] = (color, _FLASH_DURATION)
+
+        if current_cells - self._prev_violation_cells:
+            self.assets.play_sound("warning")
+
+        self._prev_violation_cells = current_cells
+
     def update(self, dt_ms: int) -> str | None:
         """毎フレーム更新。タイムアウト時 'timeout' を返す。"""
+        # 点滅カウンタ更新
+        expired = []
+        for cell, (color, frames) in self._flash_cells.items():
+            self._flash_cells[cell] = (color, frames - 1)
+            if frames - 1 <= 0:
+                expired.append(cell)
+        for cell in expired:
+            del self._flash_cells[cell]
+
         if self._locked:
             return None
         if self.timer.update(dt_ms):
@@ -137,6 +182,9 @@ class PlayScreen:
 
         # グリッド
         self.grid.draw(surface, self.board)
+
+        # 違反セル点滅ハイライト
+        self._draw_flash_highlights(surface)
 
         # フッター
         self._draw_footer(surface)
@@ -164,6 +212,14 @@ class PlayScreen:
         counter_text = f"配置: {placed}/{total}"
         counter = self._font_counter.render(counter_text, True, COLOR_COUNTER_TEXT)
         surface.blit(counter, (SCREEN_WIDTH - counter.get_width() - 20, 16))
+
+    def _draw_flash_highlights(self, surface: pygame.Surface) -> None:
+        """違反セルの点滅ハイライトを描画。"""
+        for (r, c), (color, frames) in self._flash_cells.items():
+            if frames % 4 < 2:  # 点滅効果
+                continue
+            rect = cell_rect(r, c)
+            pygame.draw.rect(surface, color, rect, width=3, border_radius=8)
 
     def _draw_footer(self, surface: pygame.Surface) -> None:
         footer_rect = pygame.Rect(0, SCREEN_HEIGHT - 65, SCREEN_WIDTH, 65)
