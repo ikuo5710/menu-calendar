@@ -121,10 +121,18 @@ def _solve_with_cpsat(timeout_seconds: float) -> Optional[Board]:
                 # b1 AND b2 を禁止
                 model.add_bool_or([b1.negated(), b2.negated()])
 
+    # ランダム目的関数で解を多様化
+    coeffs = [random.randint(-10, 10) for _ in range(GRID_ROWS * GRID_COLS)]
+    obj = sum(
+        coeffs[r * GRID_COLS + c] * x[r][c]
+        for r in range(GRID_ROWS)
+        for c in range(GRID_COLS)
+    )
+    model.maximize(obj)
+
     # ソルバー実行
     solver = cp_model.CpSolver()
     solver.parameters.max_time_in_seconds = timeout_seconds
-    solver.parameters.random_seed = random.randint(0, 2**31 - 1)
 
     status = solver.solve(model)
 
