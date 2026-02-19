@@ -7,6 +7,7 @@ OR-Tools の CP-SAT ソルバーで全制約を満たす解を生成する。
 from __future__ import annotations
 
 import logging
+import random
 from typing import Optional
 
 from src.model.board import Board
@@ -123,6 +124,7 @@ def _solve_with_cpsat(timeout_seconds: float) -> Optional[Board]:
     # ソルバー実行
     solver = cp_model.CpSolver()
     solver.parameters.max_time_in_seconds = timeout_seconds
+    solver.parameters.random_seed = random.randint(0, 2**31 - 1)
 
     status = solver.solve(model)
 
@@ -138,7 +140,7 @@ def _solve_with_cpsat(timeout_seconds: float) -> Optional[Board]:
 
 
 def _fallback_board() -> Board:
-    """ハードコード済みのフォールバック解を返す。"""
+    """ハードコード済みのフォールバック固定解を返す。"""
     board = Board()
     for r in range(GRID_ROWS):
         for c in range(GRID_COLS):
