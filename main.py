@@ -7,6 +7,8 @@ from src.game import GameManager, GameState
 from src.asset_manager import AssetManager
 from src.ui.start_screen import StartScreen
 from src.ui.play_screen import PlayScreen
+from src.ui.result_screen import ResultScreen
+from src.model.scoring import calculate_score
 
 
 def main():
@@ -24,6 +26,7 @@ def main():
     game = GameManager()
     start_screen = StartScreen(assets)
     play_screen = PlayScreen(assets)
+    result_screen = ResultScreen(assets)
 
     running = True
     while running:
@@ -40,18 +43,40 @@ def main():
                     game.go_to_playing()
             elif game.state == GameState.PLAYING:
                 result = play_screen.handle_event(event)
-                if result == "done" or result == "timeout":
+                if result in ("done", "timeout"):
+                    completed = result == "done"
+                    score_result = calculate_score(
+                        play_screen.board,
+                        remaining_seconds=play_screen.timer.remaining_int,
+                        completed_by_button=completed,
+                    )
+                    result_screen.set_result(
+                        player_board=play_screen.board.copy(),
+                        answer_board=play_screen.answer,
+                        score_result=score_result,
+                    )
                     game.go_to_result()
                 elif result == "back":
                     game.go_to_start()
             elif game.state == GameState.RESULT:
-                # Phase 6 で実装
-                pass
+                result = result_screen.handle_event(event)
+                if result == "back":
+                    game.go_to_start()
 
         # --- 更新 ---
         if game.state == GameState.PLAYING:
             result = play_screen.update(dt_ms)
             if result == "timeout":
+                score_result = calculate_score(
+                    play_screen.board,
+                    remaining_seconds=0,
+                    completed_by_button=False,
+                )
+                result_screen.set_result(
+                    player_board=play_screen.board.copy(),
+                    answer_board=play_screen.answer,
+                    score_result=score_result,
+                )
                 game.go_to_result()
 
         # --- 描画 ---
@@ -60,8 +85,7 @@ def main():
         elif game.state == GameState.PLAYING:
             play_screen.draw(screen)
         elif game.state == GameState.RESULT:
-            # Phase 6 で実装（仮: 背景色のみ）
-            screen.fill((255, 240, 245))
+            result_screen.draw(screen)
 
         pygame.display.flip()
         clock.tick(FPS)

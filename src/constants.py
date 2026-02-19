@@ -135,3 +135,16 @@ COLOR_BTN_RESET_BG = (253, 199, 0)
 COLOR_BTN_RESET_TEXT = (115, 62, 10)
 COLOR_BTN_DONE_BG = (245, 73, 0)
 COLOR_BTN_DONE_TEXT = (255, 255, 255)
+
+# --- 結果確認画面色（Figma準拠） ---
+COLOR_RESULT_TITLE = (245, 73, 0)          # "けっか発表！"
+COLOR_RESULT_COMMENT = (54, 65, 83)        # 講評コメント
+COLOR_RESULT_PLAYER_HEADING = (21, 93, 252)   # "あなたの献立表" 青
+COLOR_RESULT_ANSWER_HEADING = (0, 166, 62)    # "模範解答" 緑
+COLOR_RESULT_BONUS_BG = (240, 253, 244)       # ボーナスバッジ背景
+COLOR_RESULT_BONUS_TEXT = (0, 166, 62)        # ボーナスバッジ文字
+COLOR_RESULT_TROPHY = (240, 177, 0)           # トロフィーアイコン
+COLOR_SCORE_GRADIENT_START = (255, 223, 32)   # スコア円グラデ開始
+COLOR_SCORE_GRADIENT_END = (255, 137, 4)      # スコア円グラデ終了
+COLOR_BTN_RETURN_START = (255, 137, 4)        # 戻るボタングラデ開始
+COLOR_BTN_RETURN_END = (246, 51, 154)         # 戻るボタングラデ終了
