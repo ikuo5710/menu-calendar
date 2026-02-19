@@ -112,9 +112,8 @@ class DragDrop:
             self.board.place(r, c, self._drag_menu_id)
             result = "moved" if self._drag_source else "placed"
         elif self._drag_source is not None:
-            # グリッド外にドロップ → 元に戻す
-            sr, sc = self._drag_source
-            self.board.place(sr, sc, self._drag_menu_id)
+            # グリッド外にドロップ → 除去（元のセルは既に空）
+            result = "removed"
 
         self._cancel_drag()
         return result
