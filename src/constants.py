@@ -116,4 +116,22 @@ FONT_SIZE_SMALL = 18
 
 # --- 日・ブロックラベル ---
 DAY_LABELS = ["月曜日", "火曜日", "水曜日", "木曜日", "金曜日"]
-BLOCK_LABELS = ["1ブロック", "2ブロック", "3ブロック", "4ブロック", "5ブロック"]
+BLOCK_LABELS = ["Aブロック", "Bブロック", "Cブロック", "Dブロック", "Eブロック"]
+
+# --- ゲーム実行画面色（Figma準拠） ---
+COLOR_HEADER_BG = (255, 255, 255)
+COLOR_BLOCK_LABEL = (152, 16, 250)     # ブロックヘッダ紫
+COLOR_DAY_LABEL_BG = (239, 246, 255)   # 曜日ラベル背景
+COLOR_DAY_LABEL_TEXT = (21, 93, 252)   # 曜日ラベル文字
+COLOR_CELL_EMPTY = (249, 250, 251)     # 空セル背景
+COLOR_CELL_PLUS = (209, 213, 220)      # 空セル「＋」
+COLOR_TIMER_TEXT = (54, 65, 83)        # タイマー文字
+COLOR_COUNTER_TEXT = (106, 114, 130)   # カウンター文字
+
+# ボタン色（ゲーム画面）
+COLOR_BTN_BACK_BG = (229, 231, 235)
+COLOR_BTN_BACK_TEXT = (74, 85, 101)
+COLOR_BTN_RESET_BG = (253, 199, 0)
+COLOR_BTN_RESET_TEXT = (115, 62, 10)
+COLOR_BTN_DONE_BG = (245, 73, 0)
+COLOR_BTN_DONE_TEXT = (255, 255, 255)

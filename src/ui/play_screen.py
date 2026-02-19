@@ -1,0 +1,175 @@
+"""ゲーム実行画面"""
+
+from __future__ import annotations
+
+import pygame
+
+from src.asset_manager import AssetManager
+from src.model.board import Board
+from src.ui.grid import Grid
+from src.ui.palette import Palette
+from src.ui.timer import Timer
+from src.ui.drag_drop import DragDrop
+from src.ui.button import Button
+from src.constants import (
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT,
+    GRID_ROWS,
+    GRID_COLS,
+    COLOR_BG,
+    COLOR_WHITE,
+    COLOR_HEADER_BG,
+    COLOR_ACCENT_ORANGE,
+    COLOR_COUNTER_TEXT,
+    COLOR_BTN_BACK_BG,
+    COLOR_BTN_BACK_TEXT,
+    COLOR_BTN_RESET_BG,
+    COLOR_BTN_RESET_TEXT,
+    COLOR_BTN_DONE_BG,
+    COLOR_BTN_DONE_TEXT,
+)
+
+
+class PlayScreen:
+    """ゲーム実行画面の統合。"""
+
+    def __init__(self, assets: AssetManager) -> None:
+        self.assets = assets
+        self.board = Board()
+        self.grid = Grid(assets)
+        self.palette = Palette(assets)
+        self.timer = Timer(assets)
+        self.drag_drop = DragDrop(assets, self.board, self.palette)
+
+        self._font_logo = assets.get_font(20)
+        self._font_counter = assets.get_font(16)
+        self._font_btn = assets.get_font(18)
+        self._font_emoji = None
+        try:
+            self._font_emoji = pygame.font.SysFont("segoeUIemoji", 20)
+        except Exception:
+            self._font_emoji = pygame.font.SysFont(None, 20)
+
+        # フッターボタン
+        btn_y = SCREEN_HEIGHT - 55
+        btn_h = 42
+        cx = SCREEN_WIDTH // 2
+        self.btn_back = Button(
+            rect=pygame.Rect(cx - 200, btn_y, 110, btn_h),
+            text="もどる",
+            font=self._font_btn,
+            color=COLOR_BTN_BACK_BG,
+            hover_color=(210, 212, 216),
+            text_color=COLOR_BTN_BACK_TEXT,
+            border_radius=8,
+        )
+        self.btn_reset = Button(
+            rect=pygame.Rect(cx - 70, btn_y, 120, btn_h),
+            text="リセット",
+            font=self._font_btn,
+            color=COLOR_BTN_RESET_BG,
+            hover_color=(240, 185, 0),
+            text_color=COLOR_BTN_RESET_TEXT,
+            border_radius=8,
+        )
+        self.btn_done = Button(
+            rect=pygame.Rect(cx + 70, btn_y, 130, btn_h),
+            text="完了！",
+            font=self._font_btn,
+            color=COLOR_BTN_DONE_BG,
+            hover_color=(220, 60, 0),
+            text_color=COLOR_BTN_DONE_TEXT,
+            border_radius=8,
+        )
+
+        self._locked = False
+
+    def start(self) -> None:
+        """ゲーム開始時にリセット。"""
+        self.board.reset()
+        self.timer.start()
+        self._locked = False
+
+    def handle_event(self, event: pygame.event.Event) -> str | None:
+        """イベント処理。戻り値: 'done', 'back', 'timeout', None。"""
+        if self._locked:
+            return None
+
+        # ボタン
+        if self.btn_done.handle_event(event):
+            self.assets.play_sound("button_click")
+            self._locked = True
+            return "done"
+        if self.btn_back.handle_event(event):
+            self.assets.play_sound("button_click")
+            return "back"
+        if self.btn_reset.handle_event(event):
+            self.assets.play_sound("button_click")
+            self.board.reset()
+            return None
+
+        # D&D
+        result = self.drag_drop.handle_event(event)
+        if result == "placed" or result == "moved":
+            self.assets.play_sound("drop")
+        elif result == "removed":
+            pass
+
+        return None
+
+    def update(self, dt_ms: int) -> str | None:
+        """毎フレーム更新。タイムアウト時 'timeout' を返す。"""
+        if self._locked:
+            return None
+        if self.timer.update(dt_ms):
+            self._locked = True
+            return "timeout"
+        return None
+
+    def draw(self, surface: pygame.Surface) -> None:
+        surface.fill(COLOR_BG)
+
+        # ヘッダ
+        self._draw_header(surface)
+
+        # パレット
+        self.palette.draw(surface)
+
+        # グリッド
+        self.grid.draw(surface, self.board)
+
+        # フッター
+        self._draw_footer(surface)
+
+        # ドラッグ中のアイテム（最前面）
+        self.drag_drop.draw_dragging(surface)
+
+    def _draw_header(self, surface: pygame.Surface) -> None:
+        header_rect = pygame.Rect(0, 0, SCREEN_WIDTH, 50)
+        pygame.draw.rect(surface, COLOR_HEADER_BG, header_rect)
+        pygame.draw.line(surface, (230, 230, 230), (0, 50), (SCREEN_WIDTH, 50))
+
+        # ロゴ
+        logo = self._font_logo.render("献立表パズル", True, COLOR_ACCENT_ORANGE)
+        emoji = self._font_emoji.render("\U0001f371", True, (10, 10, 10))
+        surface.blit(emoji, (15, 12))
+        surface.blit(logo, (15 + emoji.get_width() + 6, 14))
+
+        # タイマー
+        self.timer.draw(surface, SCREEN_WIDTH // 2, 25)
+
+        # 配置カウンター
+        placed = GRID_ROWS * GRID_COLS - self.board.empty_count()
+        total = GRID_ROWS * GRID_COLS
+        counter_text = f"配置: {placed}/{total}"
+        counter = self._font_counter.render(counter_text, True, COLOR_COUNTER_TEXT)
+        surface.blit(counter, (SCREEN_WIDTH - counter.get_width() - 20, 16))
+
+    def _draw_footer(self, surface: pygame.Surface) -> None:
+        footer_rect = pygame.Rect(0, SCREEN_HEIGHT - 65, SCREEN_WIDTH, 65)
+        pygame.draw.rect(surface, COLOR_HEADER_BG, footer_rect)
+        pygame.draw.line(surface, (230, 230, 230), (0, SCREEN_HEIGHT - 65), (SCREEN_WIDTH, SCREEN_HEIGHT - 65))
+
+        self.btn_back.draw(surface)
+        self.btn_reset.draw(surface)
+        self.btn_done.draw(surface)
