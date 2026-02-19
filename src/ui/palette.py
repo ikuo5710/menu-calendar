@@ -13,6 +13,7 @@ from src.constants import (
     MENU_CHIRASHI,
     MENU_NAMES,
     MENU_EMOJI,
+    MENU_ICON_KEYS,
     MENU_COLORS,
     MENU_BG_COLORS,
     FRIED_FOODS,
@@ -99,14 +100,24 @@ class Palette:
         name = MENU_NAMES[menu_id]
         text_color = MENU_COLORS[menu_id]
 
-        emoji_surf = self._font_emoji.render(emoji, True, (10, 10, 10))
+        icon_key = MENU_ICON_KEYS.get(menu_id)
+        icon_size = (32, 32)
+        icon = self.assets.get_icon(icon_key, icon_size) if icon_key else None
+
         name_surf = self._font_name.render(name, True, text_color)
 
-        emoji_y = rect.centery - emoji_surf.get_height() // 2
-        name_y = rect.centery - name_surf.get_height() // 2
+        if icon is not None:
+            icon_y = rect.centery - icon.get_height() // 2
+            surface.blit(icon, (rect.x + 10, icon_y))
+            icon_w = icon.get_width()
+        else:
+            emoji_surf = self._font_emoji.render(emoji, True, (10, 10, 10))
+            emoji_y = rect.centery - emoji_surf.get_height() // 2
+            surface.blit(emoji_surf, (rect.x + 10, emoji_y))
+            icon_w = emoji_surf.get_width()
 
-        surface.blit(emoji_surf, (rect.x + 10, emoji_y))
-        surface.blit(name_surf, (rect.x + 10 + emoji_surf.get_width() + 6, name_y))
+        name_y = rect.centery - name_surf.get_height() // 2
+        surface.blit(name_surf, (rect.x + 10 + icon_w + 6, name_y))
 
         if menu_id in FRIED_FOODS:
             badge_surf = self._font_badge.render("揚げ物", True, COLOR_WHITE)

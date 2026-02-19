@@ -13,6 +13,7 @@ from src.constants import (
     BLOCK_LABELS,
     MENU_NAMES,
     MENU_EMOJI,
+    MENU_ICON_KEYS,
     MENU_COLORS,
     MENU_BG_COLORS,
     COLOR_WHITE,
@@ -104,13 +105,21 @@ class Grid:
         bg = MENU_BG_COLORS.get(menu_id, COLOR_CELL_EMPTY)
         pygame.draw.rect(surface, bg, rect, border_radius=8)
 
-        emoji_text = MENU_EMOJI.get(menu_id, "?")
-        emoji_surf = self._font_emoji.render(emoji_text, True, (10, 10, 10))
-        emoji_rect = emoji_surf.get_rect(centerx=rect.centerx, centery=rect.centery - 10)
-        surface.blit(emoji_surf, emoji_rect)
+        icon_key = MENU_ICON_KEYS.get(menu_id)
+        icon_size = (56, 56)
+        icon = self.assets.get_icon(icon_key, icon_size) if icon_key else None
+
+        if icon is not None:
+            icon_rect = icon.get_rect(centerx=rect.centerx, centery=rect.centery - 10)
+            surface.blit(icon, icon_rect)
+        else:
+            emoji_text = MENU_EMOJI.get(menu_id, "?")
+            emoji_surf = self._font_emoji.render(emoji_text, True, (10, 10, 10))
+            icon_rect = emoji_surf.get_rect(centerx=rect.centerx, centery=rect.centery - 10)
+            surface.blit(emoji_surf, icon_rect)
 
         name = MENU_NAMES.get(menu_id, "?")
         text_color = MENU_COLORS.get(menu_id, (10, 10, 10))
         name_surf = self._font_menu_name.render(name, True, text_color)
-        name_rect = name_surf.get_rect(centerx=rect.centerx, top=emoji_rect.bottom + 4)
+        name_rect = name_surf.get_rect(centerx=rect.centerx, top=icon_rect.bottom + 4)
         surface.blit(name_surf, name_rect)

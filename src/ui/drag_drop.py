@@ -10,6 +10,7 @@ from src.ui.grid import grid_hit_test, cell_rect, CELL_SIZE
 from src.ui.palette import Palette
 from src.constants import (
     MENU_EMOJI,
+    MENU_ICON_KEYS,
     MENU_NAMES,
     MENU_COLORS,
     MENU_BG_COLORS,
@@ -96,6 +97,7 @@ class DragDrop:
         self._drag_menu_id = menu_id
         self._drag_source = source
         self._drag_pos = pos
+        self.assets.play_sound("grab")
         if source is not None:
             self.board.remove(source[0], source[1])
 
@@ -142,12 +144,20 @@ class DragDrop:
         pygame.draw.rect(surface, bg, rect, border_radius=10)
         pygame.draw.rect(surface, MENU_COLORS.get(mid, (100, 100, 100)), rect, width=2, border_radius=10)
 
-        emoji = MENU_EMOJI.get(mid, "?")
-        emoji_surf = self._font_emoji.render(emoji, True, (10, 10, 10))
-        emoji_rect = emoji_surf.get_rect(centerx=rect.centerx, centery=rect.centery - 6)
-        surface.blit(emoji_surf, emoji_rect)
+        icon_key = MENU_ICON_KEYS.get(mid)
+        icon_size = (44, 44)
+        icon = self.assets.get_icon(icon_key, icon_size) if icon_key else None
+
+        if icon is not None:
+            icon_rect = icon.get_rect(centerx=rect.centerx, centery=rect.centery - 6)
+            surface.blit(icon, icon_rect)
+        else:
+            emoji = MENU_EMOJI.get(mid, "?")
+            emoji_surf = self._font_emoji.render(emoji, True, (10, 10, 10))
+            icon_rect = emoji_surf.get_rect(centerx=rect.centerx, centery=rect.centery - 6)
+            surface.blit(emoji_surf, icon_rect)
 
         name = MENU_NAMES.get(mid, "?")
         name_surf = self._font_name.render(name, True, MENU_COLORS.get(mid, (10, 10, 10)))
-        name_rect = name_surf.get_rect(centerx=rect.centerx, top=emoji_rect.bottom + 2)
+        name_rect = name_surf.get_rect(centerx=rect.centerx, top=icon_rect.bottom + 2)
         surface.blit(name_surf, name_rect)

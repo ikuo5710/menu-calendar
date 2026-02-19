@@ -42,6 +42,19 @@ class AssetManager:
         self._images[key] = surf
         return surf
 
+    def get_icon(self, key: str, size: tuple[int, int]) -> pygame.Surface | None:
+        """アイコン画像を指定サイズにスケーリングして返す。キャッシュ付き。"""
+        cache_key = (key, size)
+        if cache_key in self._images:
+            return self._images[cache_key]
+        raw = self.load_image(key)
+        if raw is None:
+            self._images[cache_key] = None
+            return None
+        scaled = pygame.transform.smoothscale(raw, size)
+        self._images[cache_key] = scaled
+        return scaled
+
     # --- 音声 ---
 
     def load_sound(self, key: str) -> pygame.mixer.Sound | None:

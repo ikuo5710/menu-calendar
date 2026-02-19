@@ -94,6 +94,15 @@ MENU_BG_COLORS = {
     MENU_CHIRASHI: (253, 242, 248),
 }
 
+# メニューアイコンキー（config.json の icons セクションのキーに対応）
+MENU_ICON_KEYS = {
+    MENU_KARAAGE: "karaage",
+    MENU_EBI_FRY: "ebi_fry",
+    MENU_CURRY_UDON: "curry_udon",
+    MENU_CURRY_RICE: "curry_rice",
+    MENU_CHIRASHI: "chirashi",
+}
+
 # メニュー絵文字
 MENU_EMOJI = {
     MENU_KARAAGE: "\U0001f357",     # 🍗

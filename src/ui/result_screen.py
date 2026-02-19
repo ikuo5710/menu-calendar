@@ -17,6 +17,7 @@ from src.constants import (
     BLOCK_LABELS,
     MENU_NAMES,
     MENU_EMOJI,
+    MENU_ICON_KEYS,
     MENU_COLORS,
     MENU_BG_COLORS,
     COLOR_WHITE,
@@ -348,20 +349,30 @@ class ResultScreen:
                     bg = MENU_BG_COLORS.get(menu_id, COLOR_CELL_EMPTY)
                     pygame.draw.rect(surface, bg, rect, border_radius=6)
 
-                    # 絵文字
-                    emoji_text = MENU_EMOJI.get(menu_id, "?")
-                    emoji_surf = self._font_emoji.render(emoji_text, True, (10, 10, 10))
-                    emoji_rect = emoji_surf.get_rect(
-                        centerx=rect.centerx, centery=rect.centery - 6
-                    )
-                    surface.blit(emoji_surf, emoji_rect)
+                    # アイコン画像（欠損時は絵文字フォールバック）
+                    icon_key = MENU_ICON_KEYS.get(menu_id)
+                    icon_sz = max(cell // 2, 24)
+                    icon = self.assets.get_icon(icon_key, (icon_sz, icon_sz)) if icon_key else None
+
+                    if icon is not None:
+                        img_rect = icon.get_rect(
+                            centerx=rect.centerx, centery=rect.centery - 6
+                        )
+                        surface.blit(icon, img_rect)
+                    else:
+                        emoji_text = MENU_EMOJI.get(menu_id, "?")
+                        emoji_surf = self._font_emoji.render(emoji_text, True, (10, 10, 10))
+                        img_rect = emoji_surf.get_rect(
+                            centerx=rect.centerx, centery=rect.centery - 6
+                        )
+                        surface.blit(emoji_surf, img_rect)
 
                     # メニュー名
                     name = MENU_NAMES.get(menu_id, "?")
                     text_color = MENU_COLORS.get(menu_id, (10, 10, 10))
                     name_surf = self._font_menu.render(name, True, text_color)
                     name_rect = name_surf.get_rect(
-                        centerx=rect.centerx, top=emoji_rect.bottom + 1
+                        centerx=rect.centerx, top=img_rect.bottom + 1
                     )
                     surface.blit(name_surf, name_rect)
 
