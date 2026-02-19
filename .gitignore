@@ -13,3 +13,4 @@ Thumbs.db
 
 # Beads
 .beads/export-state/
+__pycache__/
