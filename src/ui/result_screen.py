@@ -134,9 +134,18 @@ class ResultScreen:
 
     # ---- ヘッダ: スコア表示 ----
 
+    def _header_height(self) -> int:
+        """ヘッダの必要高さを計算する。"""
+        sr = self._score_result
+        # タイトル(8) + タイトル高さ(~30) + スコア円(直径80) + コメント(~20) + 余白
+        h = 8 + 30 + 80 + 6 + 20 + 10
+        if sr and sr.bonus > 0:
+            h += 26  # ボーナスバッジ分
+        return h
+
     def _draw_header(self, surface: pygame.Surface) -> None:
         sr = self._score_result
-        header_h = 160
+        header_h = self._header_height()
         header_rect = pygame.Rect(0, 0, SCREEN_WIDTH, header_h)
         pygame.draw.rect(surface, COLOR_HEADER_BG, header_rect)
         pygame.draw.line(
@@ -147,7 +156,7 @@ class ResultScreen:
 
         # タイトル "けっか発表！"
         title = self._font_title.render("けっか発表！", True, COLOR_RESULT_TITLE)
-        title_rect = title.get_rect(centerx=cx, top=10)
+        title_rect = title.get_rect(centerx=cx, top=8)
         # トロフィーアイコン（テキストで代用）
         trophy = self._font_title.render("★", True, COLOR_RESULT_TROPHY)
         surface.blit(trophy, (title_rect.left - trophy.get_width() - 8, title_rect.top))
@@ -157,9 +166,9 @@ class ResultScreen:
         )
 
         # スコア円
-        circle_r = 48
+        circle_r = 40
         circle_cx = cx
-        circle_cy = 85
+        circle_cy = title_rect.bottom + 6 + circle_r
         self._draw_score_circle(surface, circle_cx, circle_cy, circle_r, sr.score)
 
         # コメント
@@ -212,7 +221,7 @@ class ResultScreen:
     # ---- ボディ: 2パネル ----
 
     def _draw_body(self, surface: pygame.Surface) -> None:
-        body_top = 165
+        body_top = self._header_height() + 5
         body_h = SCREEN_HEIGHT - body_top - 70
         panel_gap = 16
         panel_pad = 16
@@ -268,7 +277,6 @@ class ResultScreen:
             return
 
         # ミニグリッド描画
-        grid_x = inner_x
         grid_y = grid_top
         avail_w = panel_rect.width - pad * 2
         avail_h = panel_rect.height - pad - (grid_top - panel_rect.y)
@@ -278,12 +286,16 @@ class ResultScreen:
         cell_h = (avail_h - _MINI_HEADER_H - _MINI_GAP * (GRID_ROWS - 1)) // GRID_ROWS
         cell = min(cell_w, cell_h, _MINI_CELL)
 
+        # グリッド全体幅を計算し、パネル内で中央揃え
+        grid_total_w = _MINI_DAY_W + GRID_COLS * cell + (GRID_COLS - 1) * _MINI_GAP
+        grid_x = panel_rect.x + (panel_rect.width - grid_total_w) // 2
+
         self._draw_mini_grid(surface, grid_x, grid_y, cell, board, show_violations)
 
         # 違反一覧（左パネルのグリッド下部）
         if show_violations and self._score_result:
             penalty_y = grid_y + _MINI_HEADER_H + GRID_ROWS * (cell + _MINI_GAP) + 4
-            self._draw_penalty_summary(surface, inner_x, penalty_y, avail_w)
+            self._draw_penalty_summary(surface, grid_x, penalty_y, avail_w)
 
     def _draw_mini_grid(
         self,
