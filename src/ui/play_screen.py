@@ -8,7 +8,7 @@ from src.asset_manager import AssetManager
 from src.model.board import Board
 from src.model.rules import check_all
 from src.model.solver import generate_solution
-from src.ui.grid import Grid, cell_rect
+from src.ui.grid import Grid, cell_rect, GRID_X, DAY_LABEL_W, CELL_SIZE, CELL_GAP, GRID_Y, HEADER_H
 from src.ui.palette import Palette
 from src.ui.timer import Timer
 from src.ui.drag_drop import DragDrop
@@ -23,6 +23,7 @@ from src.constants import (
     COLOR_HEADER_BG,
     COLOR_ACCENT_ORANGE,
     COLOR_COUNTER_TEXT,
+    COLOR_TEXT_SUB,
     COLOR_HIGHLIGHT_RED,
     COLOR_HIGHLIGHT_BLUE,
     COLOR_HIGHLIGHT_ORANGE,
@@ -33,6 +34,7 @@ from src.constants import (
     COLOR_BTN_RESET_TEXT,
     COLOR_BTN_DONE_BG,
     COLOR_BTN_DONE_TEXT,
+    RULES,
 )
 
 # 違反種別→枠色のマッピング
@@ -61,6 +63,9 @@ class PlayScreen:
         self._font_logo = assets.get_font(20)
         self._font_counter = assets.get_font(16)
         self._font_btn = assets.get_font(18)
+        self._font_rule_title = assets.get_font(11)
+        self._font_rule_desc = assets.get_font(10)
+        self._font_rule_num = assets.get_font(10)
         self._font_emoji = None
         try:
             self._font_emoji = pygame.font.SysFont("segoeUIemoji", 20)
@@ -194,6 +199,9 @@ class PlayScreen:
         # 違反セル点滅ハイライト
         self._draw_flash_highlights(surface)
 
+        # ルールパネル（グリッド右横）
+        self._draw_rules_panel(surface)
+
         # フッター
         self._draw_footer(surface)
 
@@ -228,6 +236,56 @@ class PlayScreen:
                 continue
             rect = cell_rect(r, c)
             pygame.draw.rect(surface, color, rect, width=3, border_radius=8)
+
+    def _draw_rules_panel(self, surface: pygame.Surface) -> None:
+        """グリッド右横にルール（4つの約束）を描画。"""
+        # グリッド右端の位置
+        grid_right = GRID_X + DAY_LABEL_W + GRID_COLS * (CELL_SIZE + CELL_GAP)
+        panel_x = grid_right + 12
+        panel_y = GRID_Y + HEADER_H
+        panel_w = SCREEN_WIDTH - panel_x - 12
+
+        # 見出し
+        heading = self._font_rule_title.render(
+            "4つの約束", True, COLOR_ACCENT_ORANGE
+        )
+        surface.blit(heading, (panel_x + 4, panel_y))
+        card_y = panel_y + heading.get_height() + 6
+
+        # 利用可能な高さからカード高さを計算
+        footer_top = SCREEN_HEIGHT - 65
+        avail_h = footer_top - card_y - 8
+        card_gap = 8
+        card_h = (avail_h - card_gap * (len(RULES) - 1)) // len(RULES)
+
+        for rule in RULES:
+            self._draw_rule_card(surface, rule, panel_x, card_y, panel_w, card_h)
+            card_y += card_h + card_gap
+
+    def _draw_rule_card(
+        self, surface: pygame.Surface, rule: dict,
+        x: int, y: int, w: int, h: int
+    ) -> None:
+        """ルールカード1枚を描画。"""
+        rect = pygame.Rect(x, y, w, h)
+        pygame.draw.rect(surface, rule["bg"], rect, border_radius=8)
+
+        pad = 8
+        # 番号バッジ
+        badge_size = 20
+        badge_rect = pygame.Rect(x + pad, y + pad, badge_size, badge_size)
+        pygame.draw.rect(surface, rule["color"], badge_rect, border_radius=10)
+        num_surf = self._font_rule_num.render(str(rule["number"]), True, COLOR_WHITE)
+        surface.blit(num_surf, num_surf.get_rect(center=badge_rect.center))
+
+        # タイトル
+        title_x = x + pad + badge_size + 6
+        title_surf = self._font_rule_title.render(rule["title"], True, rule["color"])
+        surface.blit(title_surf, (title_x, y + pad + 1))
+
+        # 説明
+        desc_surf = self._font_rule_desc.render(rule["desc"], True, COLOR_TEXT_SUB)
+        surface.blit(desc_surf, (title_x, y + pad + title_surf.get_height() + 3))
 
     def _draw_footer(self, surface: pygame.Surface) -> None:
         footer_rect = pygame.Rect(0, SCREEN_HEIGHT - 65, SCREEN_WIDTH, 65)

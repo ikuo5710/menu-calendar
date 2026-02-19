@@ -14,11 +14,6 @@ from src.constants import (
     COLOR_ACCENT_SUB,
     COLOR_TEXT_SUB,
     COLOR_WHITE,
-    COLOR_HIGHLIGHT_RED,
-    COLOR_HIGHLIGHT_BLUE,
-    COLOR_HIGHLIGHT_ORANGE,
-    COLOR_HIGHLIGHT_PURPLE,
-    COLOR_RULE_BG,
     COLOR_BUTTON_START,
     COLOR_BUTTON_START_HOVER,
     COLOR_BUTTON_TEXT,
@@ -36,39 +31,8 @@ from src.constants import (
     FONT_SIZE_LARGE,
     FONT_SIZE_MEDIUM,
     FONT_SIZE_SMALL,
+    RULES,
 )
-
-# ルール定義
-RULES = [
-    {
-        "number": 1,
-        "color": COLOR_HIGHLIGHT_RED,
-        "bg": COLOR_RULE_BG[1],
-        "title": "同じブロック（列）に同じメニューは1回だけ！",
-        "desc": "各ブロック内で同じ献立が重複しないようにしよう",
-    },
-    {
-        "number": 2,
-        "color": COLOR_HIGHLIGHT_BLUE,
-        "bg": COLOR_RULE_BG[2],
-        "title": "ちらし寿司は1日1ブロックまで！",
-        "desc": "同じ日（行）でちらし寿司は最大1つ",
-    },
-    {
-        "number": 3,
-        "color": COLOR_HIGHLIGHT_ORANGE,
-        "bg": COLOR_RULE_BG[3],
-        "title": "揚げ物は1日3ブロックまで！",
-        "desc": "同じ日でからあげ・エビフライの合計は最大3つ",
-    },
-    {
-        "number": 4,
-        "color": COLOR_HIGHLIGHT_PURPLE,
-        "bg": COLOR_RULE_BG[4],
-        "title": "カレー2種の連続禁止！",
-        "desc": "同じブロックで連続する日にカレーうどん↔カレーライスはNG",
-    },
-]
 
 
 class StartScreen:

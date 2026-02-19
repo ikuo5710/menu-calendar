@@ -148,3 +148,35 @@ COLOR_SCORE_GRADIENT_START = (255, 223, 32)   # スコア円グラデ開始
 COLOR_SCORE_GRADIENT_END = (255, 137, 4)      # スコア円グラデ終了
 COLOR_BTN_RETURN_START = (255, 137, 4)        # 戻るボタングラデ開始
 COLOR_BTN_RETURN_END = (246, 51, 154)         # 戻るボタングラデ終了
+
+# --- ルール定義（4つの約束） ---
+RULES = [
+    {
+        "number": 1,
+        "color": COLOR_HIGHLIGHT_RED,
+        "bg": COLOR_RULE_BG[1],
+        "title": "同じブロック（列）に同じメニューは1回だけ！",
+        "desc": "各ブロック内で同じ献立が重複しないようにしよう",
+    },
+    {
+        "number": 2,
+        "color": COLOR_HIGHLIGHT_BLUE,
+        "bg": COLOR_RULE_BG[2],
+        "title": "ちらし寿司は1日1ブロックまで！",
+        "desc": "同じ日（行）でちらし寿司は最大1つ",
+    },
+    {
+        "number": 3,
+        "color": COLOR_HIGHLIGHT_ORANGE,
+        "bg": COLOR_RULE_BG[3],
+        "title": "揚げ物は1日3ブロックまで！",
+        "desc": "同じ日でからあげ・エビフライの合計は最大3つ",
+    },
+    {
+        "number": 4,
+        "color": COLOR_HIGHLIGHT_PURPLE,
+        "bg": COLOR_RULE_BG[4],
+        "title": "カレー2種の連続禁止！",
+        "desc": "同じブロックで連続する日にカレーうどん↔カレーライスはNG",
+    },
+]
