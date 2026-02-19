@@ -7,6 +7,7 @@ import pygame
 from src.asset_manager import AssetManager
 from src.model.board import Board
 from src.model.rules import check_all
+from src.model.solver import generate_solution
 from src.ui.grid import Grid, cell_rect
 from src.ui.palette import Palette
 from src.ui.timer import Timer
@@ -101,14 +102,21 @@ class PlayScreen:
         self._locked = False
         self._flash_cells: dict[tuple[int, int], tuple[tuple[int, int, int], int]] = {}
         self._prev_violation_cells: set[tuple[int, int]] = set()
+        self._answer: Board | None = None  # 模範解答キャッシュ
 
     def start(self) -> None:
-        """ゲーム開始時にリセット。"""
+        """ゲーム開始時にリセットし、模範解答を生成。"""
         self.board.reset()
         self.timer.start()
         self._locked = False
         self._flash_cells.clear()
         self._prev_violation_cells.clear()
+        self._answer = generate_solution()
+
+    @property
+    def answer(self) -> Board | None:
+        """模範解答（結果画面で使用）。"""
+        return self._answer
 
     def handle_event(self, event: pygame.event.Event) -> str | None:
         """イベント処理。戻り値: 'done', 'back', 'timeout', None。"""
