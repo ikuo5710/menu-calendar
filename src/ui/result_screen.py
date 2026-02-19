@@ -138,9 +138,9 @@ class ResultScreen:
         """ヘッダの必要高さを計算する。"""
         sr = self._score_result
         # タイトル(8) + タイトル高さ(~30) + スコア円(直径80) + コメント(~20) + 余白
-        h = 8 + 30 + 80 + 6 + 20 + 10
+        h = 8 + 30 + 80 + 6 + 20 + 16
         if sr and sr.bonus > 0:
-            h += 26  # ボーナスバッジ分
+            h += 30  # ボーナスバッジ分 + 下マージン
         return h
 
     def _draw_header(self, surface: pygame.Surface) -> None:
@@ -266,9 +266,10 @@ class ResultScreen:
         inner_x = panel_rect.x + pad
         inner_y = panel_rect.y + pad
 
-        # 見出し
+        # 見出し（中央揃え）
         heading_surf = self._font_heading.render(heading, True, heading_color)
-        surface.blit(heading_surf, (inner_x + 4, inner_y))
+        heading_rect = heading_surf.get_rect(centerx=panel_rect.centerx, top=inner_y)
+        surface.blit(heading_surf, heading_rect)
         grid_top = inner_y + heading_surf.get_height() + 8
 
         if board is None:
