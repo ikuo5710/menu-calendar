@@ -13,7 +13,8 @@ class AssetManager:
     アセットが欠損してもゲームは継続する。
     """
 
-    def __init__(self, config_path: str = "assets/config.json") -> None:
+    def __init__(self, base_path: str = "", config_path: str = "assets/config.json") -> None:
+        self._base_path = base_path
         self._config: dict = {}
         self._images: dict[str, pygame.Surface | None] = {}
         self._sounds: dict[str, pygame.mixer.Sound | None] = {}
@@ -21,7 +22,15 @@ class AssetManager:
         self._bgm_enabled: bool = True
         self._sfx_enabled: bool = True
         self._current_bgm: str | None = None
-        self._load_config(config_path)
+        self._load_config(self._resolve(config_path))
+
+    def _resolve(self, relative_path: str) -> str:
+        """ベースパスからの相対パスを絶対パスに解決する。"""
+        if not relative_path:
+            return ""
+        if self._base_path:
+            return os.path.join(self._base_path, relative_path)
+        return relative_path
 
     def _load_config(self, path: str) -> None:
         try:
@@ -35,7 +44,7 @@ class AssetManager:
     def load_image(self, key: str) -> pygame.Surface | None:
         if key in self._images:
             return self._images[key]
-        path = self._config.get("icons", {}).get(key, "")
+        path = self._resolve(self._config.get("icons", {}).get(key, ""))
         surf = None
         if path and os.path.isfile(path):
             try:
@@ -63,7 +72,7 @@ class AssetManager:
     def load_sound(self, key: str) -> pygame.mixer.Sound | None:
         if key in self._sounds:
             return self._sounds[key]
-        path = self._config.get("sounds", {}).get(key, "")
+        path = self._resolve(self._config.get("sounds", {}).get(key, ""))
         sound = None
         if path and os.path.isfile(path):
             try:
@@ -87,7 +96,7 @@ class AssetManager:
         if key == self._current_bgm:
             return
         self._current_bgm = key
-        path = self._config.get("bgm", {}).get(key, "")
+        path = self._resolve(self._config.get("bgm", {}).get(key, ""))
         if not path or not os.path.isfile(path):
             return
         try:
@@ -131,7 +140,7 @@ class AssetManager:
     # --- フォント ---
 
     def get_font(self, size: int) -> pygame.font.Font:
-        font_path = self._config.get("fonts", {}).get("main", "")
+        font_path = self._resolve(self._config.get("fonts", {}).get("main", ""))
         cache_key = (font_path, size)
         if cache_key in self._font_cache:
             return self._font_cache[cache_key]

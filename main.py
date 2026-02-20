@@ -12,6 +12,13 @@ from src.ui.result_screen import ResultScreen
 from src.model.scoring import calculate_score
 
 
+def _base_path() -> str:
+    """PyInstaller バンドル時は _MEIPASS、通常時はスクリプトのディレクトリを返す。"""
+    if getattr(sys, "frozen", False):
+        return sys._MEIPASS
+    return os.path.dirname(os.path.abspath(__file__))
+
+
 def main():
     pygame.init()
     try:
@@ -22,13 +29,14 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption(TITLE)
 
-    icon_path = os.path.join(os.path.dirname(__file__), "assets", "icons", "app_icon.png")
+    base = _base_path()
+    icon_path = os.path.join(base, "assets", "icons", "app_icon.png")
     if os.path.exists(icon_path):
         icon = pygame.image.load(icon_path)
         pygame.display.set_icon(icon)
     clock = pygame.time.Clock()
 
-    assets = AssetManager()
+    assets = AssetManager(base_path=base)
     game = GameManager()
     start_screen = StartScreen(assets)
     play_screen = PlayScreen(assets)
