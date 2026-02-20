@@ -22,6 +22,7 @@ from src.constants import (
     MENU_EMOJI,
     MENU_COLORS,
     MENU_BG_COLORS,
+    MENU_ICON_KEYS,
     MENU_KARAAGE,
     MENU_EBI_FRY,
     MENU_CURRY_UDON,
@@ -175,6 +176,7 @@ class StartScreen:
         total_w = len(menu_ids) * card_w + (len(menu_ids) - 1) * gap
         start_x = cx - total_w // 2
 
+        icon_size = (28, 28)
         for i, mid in enumerate(menu_ids):
             x = start_x + i * (card_w + gap)
             bg_color = MENU_BG_COLORS[mid]
@@ -182,26 +184,31 @@ class StartScreen:
             rect = pygame.Rect(x, y, card_w, card_h)
             pygame.draw.rect(surface, bg_color, rect, border_radius=8)
 
-            emoji = MENU_EMOJI[mid]
             name = MENU_NAMES[mid]
-            emoji_surf = self._font_emoji_small.render(emoji, True, (10, 10, 10))
+            icon_key = MENU_ICON_KEYS.get(mid)
+            icon_surf = self.assets.get_icon(icon_key, icon_size) if icon_key else None
             name_surf = self._font_small.render(name, True, text_color)
 
-            content_w = emoji_surf.get_width() + 4 + name_surf.get_width()
+            # アイコンが読み込めない場合は絵文字にフォールバック
+            if icon_surf is None:
+                emoji = MENU_EMOJI[mid]
+                icon_surf = self._font_emoji_small.render(emoji, True, (10, 10, 10))
+
+            content_w = icon_surf.get_width() + 4 + name_surf.get_width()
             badge_surf = None
             if mid in FRIED_FOODS:
                 badge_surf = self._font_small.render("揚げ物", True, COLOR_WHITE)
                 content_w += 4 + badge_surf.get_width() + 10
 
             content_x = x + (card_w - content_w) // 2
-            emoji_y = y + (card_h - emoji_surf.get_height()) // 2
+            icon_y = y + (card_h - icon_surf.get_height()) // 2
             name_y = y + (card_h - name_surf.get_height()) // 2
 
-            surface.blit(emoji_surf, (content_x, emoji_y))
-            surface.blit(name_surf, (content_x + emoji_surf.get_width() + 4, name_y))
+            surface.blit(icon_surf, (content_x, icon_y))
+            surface.blit(name_surf, (content_x + icon_surf.get_width() + 4, name_y))
 
             if badge_surf:
-                badge_x = content_x + emoji_surf.get_width() + 4 + name_surf.get_width() + 4
+                badge_x = content_x + icon_surf.get_width() + 4 + name_surf.get_width() + 4
                 badge_rect = pygame.Rect(
                     badge_x, y + (card_h - 20) // 2, badge_surf.get_width() + 10, 20
                 )
