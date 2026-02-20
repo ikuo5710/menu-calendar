@@ -14,11 +14,11 @@ GRID_COLS = 5  # ブロック数
 TIMER_SECONDS = 180
 
 # --- メニューID ---
-MENU_KARAAGE = 0      # からあげ（揚げ物）
-MENU_EBI_FRY = 1      # エビフライ（揚げ物）
-MENU_CURRY_UDON = 2   # カレーうどん
-MENU_CURRY_RICE = 3   # カレーライス
-MENU_CHIRASHI = 4     # ちらし寿司
+MENU_KARAAGE = 0  # からあげ（揚げ物）
+MENU_EBI_FRY = 1  # エビフライ（揚げ物）
+MENU_CURRY_UDON = 2  # カレーうどん
+MENU_CURRY_RICE = 3  # カレーライス
+MENU_CHIRASHI = 4  # ちらし寿司
 
 MENU_COUNT = 5
 
@@ -48,8 +48,8 @@ PENALTY_CHIRASHI_EXCESS = 10
 PENALTY_FRIED_EXCESS = 6
 PENALTY_CURRY_CONSECUTIVE = 10
 
-BONUS_EARLY_120 = 5   # 残り120秒以上
-BONUS_EARLY_60 = 3    # 残り60秒以上
+BONUS_EARLY_120 = 5  # 残り120秒以上
+BONUS_EARLY_60 = 3  # 残り60秒以上
 
 # --- 色（Figmaデザイン準拠） ---
 COLOR_WHITE = (255, 255, 255)
@@ -61,13 +61,13 @@ COLOR_GRID_BG = (255, 255, 255)
 COLOR_GRID_LINE = (180, 180, 180)
 COLOR_TEXT_MAIN = (10, 10, 10)
 COLOR_TEXT_SUB = (106, 114, 130)
-COLOR_ACCENT_ORANGE = (245, 73, 0)       # タイトル・揚げ物バッジ
-COLOR_ACCENT_SUB = (255, 105, 0)         # サブタイトル
-COLOR_HIGHLIGHT_RED = (239, 68, 68)      # ルール1: ブロック内重複
-COLOR_HIGHLIGHT_BLUE = (59, 130, 246)    # ルール2: ちらし寿司超過
+COLOR_ACCENT_ORANGE = (245, 73, 0)  # タイトル・揚げ物バッジ
+COLOR_ACCENT_SUB = (255, 105, 0)  # サブタイトル
+COLOR_HIGHLIGHT_RED = (239, 68, 68)  # ルール1: ブロック内重複
+COLOR_HIGHLIGHT_BLUE = (59, 130, 246)  # ルール2: ちらし寿司超過
 COLOR_HIGHLIGHT_ORANGE = (249, 115, 22)  # ルール3: 揚げ物超過
 COLOR_HIGHLIGHT_PURPLE = (139, 92, 246)  # ルール4: カレー連続
-COLOR_EMPTY_BG = (220, 220, 220)         # 空欄
+COLOR_EMPTY_BG = (220, 220, 220)  # 空欄
 
 # ルールカード背景色（Figma準拠）
 COLOR_RULE_BG = {
@@ -105,11 +105,11 @@ MENU_ICON_KEYS = {
 
 # メニュー絵文字
 MENU_EMOJI = {
-    MENU_KARAAGE: "\U0001f357",     # 🍗
-    MENU_EBI_FRY: "\U0001f364",     # 🍤
+    MENU_KARAAGE: "\U0001f357",  # 🍗
+    MENU_EBI_FRY: "\U0001f364",  # 🍤
     MENU_CURRY_UDON: "\U0001f35c",  # 🍜
     MENU_CURRY_RICE: "\U0001f35b",  # 🍛
-    MENU_CHIRASHI: "\U0001f363",    # 🍣
+    MENU_CHIRASHI: "\U0001f363",  # 🍣
 }
 
 # ボタン色
@@ -129,13 +129,13 @@ BLOCK_LABELS = ["Aブロック", "Bブロック", "Cブロック", "Dブロッ�
 
 # --- ゲーム実行画面色（Figma準拠） ---
 COLOR_HEADER_BG = (255, 255, 255)
-COLOR_BLOCK_LABEL = (152, 16, 250)     # ブロックヘッダ紫
-COLOR_DAY_LABEL_BG = (239, 246, 255)   # 曜日ラベル背景
-COLOR_DAY_LABEL_TEXT = (21, 93, 252)   # 曜日ラベル文字
-COLOR_CELL_EMPTY = (249, 250, 251)     # 空セル背景
-COLOR_CELL_PLUS = (209, 213, 220)      # 空セル「＋」
-COLOR_TIMER_TEXT = (54, 65, 83)        # タイマー文字
-COLOR_COUNTER_TEXT = (106, 114, 130)   # カウンター文字
+COLOR_BLOCK_LABEL = (152, 16, 250)  # ブロックヘッダ紫
+COLOR_DAY_LABEL_BG = (239, 246, 255)  # 曜日ラベル背景
+COLOR_DAY_LABEL_TEXT = (21, 93, 252)  # 曜日ラベル文字
+COLOR_CELL_EMPTY = (249, 250, 251)  # 空セル背景
+COLOR_CELL_PLUS = (209, 213, 220)  # 空セル「＋」
+COLOR_TIMER_TEXT = (54, 65, 83)  # タイマー文字
+COLOR_COUNTER_TEXT = (106, 114, 130)  # カウンター文字
 
 # ボタン色（ゲーム画面）
 COLOR_BTN_BACK_BG = (229, 231, 235)
@@ -146,17 +146,17 @@ COLOR_BTN_DONE_BG = (245, 73, 0)
 COLOR_BTN_DONE_TEXT = (255, 255, 255)
 
 # --- 結果確認画面色（Figma準拠） ---
-COLOR_RESULT_TITLE = (245, 73, 0)          # "けっか発表！"
-COLOR_RESULT_COMMENT = (54, 65, 83)        # 講評コメント
-COLOR_RESULT_PLAYER_HEADING = (21, 93, 252)   # "あなたの献立表" 青
-COLOR_RESULT_ANSWER_HEADING = (0, 166, 62)    # "模範解答" 緑
-COLOR_RESULT_BONUS_BG = (240, 253, 244)       # ボーナスバッジ背景
-COLOR_RESULT_BONUS_TEXT = (0, 166, 62)        # ボーナスバッジ文字
-COLOR_RESULT_TROPHY = (240, 177, 0)           # トロフィーアイコン
-COLOR_SCORE_GRADIENT_START = (255, 223, 32)   # スコア円グラデ開始
-COLOR_SCORE_GRADIENT_END = (255, 137, 4)      # スコア円グラデ終了
-COLOR_BTN_RETURN_START = (255, 137, 4)        # 戻るボタングラデ開始
-COLOR_BTN_RETURN_END = (246, 51, 154)         # 戻るボタングラデ終了
+COLOR_RESULT_TITLE = (245, 73, 0)  # "けっか発表！"
+COLOR_RESULT_COMMENT = (54, 65, 83)  # 講評コメント
+COLOR_RESULT_PLAYER_HEADING = (21, 93, 252)  # "あなたの献立表" 青
+COLOR_RESULT_ANSWER_HEADING = (0, 166, 62)  # "模範解答" 緑
+COLOR_RESULT_BONUS_BG = (240, 253, 244)  # ボーナスバッジ背景
+COLOR_RESULT_BONUS_TEXT = (0, 166, 62)  # ボーナスバッジ文字
+COLOR_RESULT_TROPHY = (240, 177, 0)  # トロフィーアイコン
+COLOR_SCORE_GRADIENT_START = (255, 223, 32)  # スコア円グラデ開始
+COLOR_SCORE_GRADIENT_END = (255, 137, 4)  # スコア円グラデ終了
+COLOR_BTN_RETURN_START = (255, 137, 4)  # 戻るボタングラデ開始
+COLOR_BTN_RETURN_END = (246, 51, 154)  # 戻るボタングラデ終了
 
 # --- ルール定義（4つの約束） ---
 RULES = [
@@ -186,6 +186,6 @@ RULES = [
         "color": COLOR_HIGHLIGHT_PURPLE,
         "bg": COLOR_RULE_BG[4],
         "title": "カレー2種の連続禁止！",
-        "desc": "同じブロックで連続する日にカレーうどん↔カレーライスはNG",
+        "desc": "同じブロックで連続する日にカレーうどん<->カレーライスはNG",
     },
 ]
