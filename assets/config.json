@@ -14,5 +14,10 @@
   },
   "fonts": {
     "main": "assets/fonts/MochiyPopOne-Regular.ttf"
+  },
+  "bgm": {
+    "opening": "assets/bgm/Opening.wav",
+    "playing": "assets/bgm/Playing.wav",
+    "ending": "assets/bgm/Ending.wav"
   }
 }

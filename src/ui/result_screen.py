@@ -8,6 +8,7 @@ from src.asset_manager import AssetManager
 from src.model.board import Board
 from src.model.scoring import ScoreResult
 from src.ui.button import Button
+from src.ui.toggle_switch import ToggleSwitch
 from src.constants import (
     SCREEN_WIDTH,
     SCREEN_HEIGHT,
@@ -79,6 +80,15 @@ class ResultScreen:
         except Exception:
             self._font_emoji = pygame.font.SysFont(None, 18)
 
+        # トグルスイッチ
+        toggle_font = assets.get_font(14)
+        self._bgm_toggle = ToggleSwitch(
+            SCREEN_WIDTH - 220, 8, "BGM", toggle_font, initial=assets.bgm_enabled
+        )
+        self._sfx_toggle = ToggleSwitch(
+            SCREEN_WIDTH - 110, 8, "SFX", toggle_font, initial=assets.sfx_enabled
+        )
+
         # フッターボタン
         btn_w, btn_h = 220, 44
         self.btn_return = Button(
@@ -113,6 +123,13 @@ class ResultScreen:
 
     def handle_event(self, event: pygame.event.Event) -> str | None:
         """イベント処理。'back' を返すとスタート画面へ。"""
+        bgm_state = self._bgm_toggle.handle_event(event)
+        if bgm_state is not None:
+            self.assets.set_bgm_enabled(bgm_state)
+        sfx_state = self._sfx_toggle.handle_event(event)
+        if sfx_state is not None:
+            self.assets.set_sfx_enabled(sfx_state)
+
         if self.btn_return.handle_event(event):
             self.assets.play_sound("button_click")
             return "back"
@@ -124,8 +141,13 @@ class ResultScreen:
         if self._score_result is None:
             return
 
+        # トグルスイッチ（最前面に描画するため先にヘッダ）
         # ヘッダ（スコア領域）
         self._draw_header(surface)
+
+        # トグルスイッチ
+        self._bgm_toggle.draw(surface)
+        self._sfx_toggle.draw(surface)
 
         # ボディ（2パネル）
         self._draw_body(surface)

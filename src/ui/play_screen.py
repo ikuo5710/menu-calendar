@@ -13,6 +13,7 @@ from src.ui.palette import Palette
 from src.ui.timer import Timer
 from src.ui.drag_drop import DragDrop
 from src.ui.button import Button
+from src.ui.toggle_switch import ToggleSwitch
 from src.constants import (
     SCREEN_WIDTH,
     SCREEN_HEIGHT,
@@ -104,6 +105,15 @@ class PlayScreen:
             border_radius=8,
         )
 
+        # トグルスイッチ
+        toggle_font = assets.get_font(14)
+        self._bgm_toggle = ToggleSwitch(
+            SCREEN_WIDTH - 220, 14, "BGM", toggle_font, initial=assets.bgm_enabled
+        )
+        self._sfx_toggle = ToggleSwitch(
+            SCREEN_WIDTH - 110, 14, "SFX", toggle_font, initial=assets.sfx_enabled
+        )
+
         self._locked = False
         self._flash_cells: dict[tuple[int, int], tuple[tuple[int, int, int], int]] = {}
         self._prev_violation_cells: set[tuple[int, int]] = set()
@@ -125,6 +135,13 @@ class PlayScreen:
 
     def handle_event(self, event: pygame.event.Event) -> str | None:
         """イベント処理。戻り値: 'done', 'back', 'timeout', None。"""
+        bgm_state = self._bgm_toggle.handle_event(event)
+        if bgm_state is not None:
+            self.assets.set_bgm_enabled(bgm_state)
+        sfx_state = self._sfx_toggle.handle_event(event)
+        if sfx_state is not None:
+            self.assets.set_sfx_enabled(sfx_state)
+
         if self._locked:
             return None
 
@@ -227,7 +244,11 @@ class PlayScreen:
         total = GRID_ROWS * GRID_COLS
         counter_text = f"配置: {placed}/{total}"
         counter = self._font_counter.render(counter_text, True, COLOR_COUNTER_TEXT)
-        surface.blit(counter, (SCREEN_WIDTH - counter.get_width() - 20, 16))
+        surface.blit(counter, (SCREEN_WIDTH - counter.get_width() - 20, 32))
+
+        # トグルスイッチ
+        self._bgm_toggle.draw(surface)
+        self._sfx_toggle.draw(surface)
 
     def _draw_flash_highlights(self, surface: pygame.Surface) -> None:
         """違反セルの点滅ハイライトを描画。"""

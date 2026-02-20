@@ -18,6 +18,9 @@ class AssetManager:
         self._images: dict[str, pygame.Surface | None] = {}
         self._sounds: dict[str, pygame.mixer.Sound | None] = {}
         self._font_cache: dict[tuple[str | None, int], pygame.font.Font] = {}
+        self._bgm_enabled: bool = True
+        self._sfx_enabled: bool = True
+        self._current_bgm: str | None = None
         self._load_config(config_path)
 
     def _load_config(self, path: str) -> None:
@@ -71,9 +74,59 @@ class AssetManager:
         return sound
 
     def play_sound(self, key: str) -> None:
+        if not self._sfx_enabled:
+            return
         sound = self.load_sound(key)
         if sound:
             sound.play()
+
+    # --- BGM ---
+
+    def play_bgm(self, key: str) -> None:
+        """BGMをループ再生する。同じ曲なら再読み込みしない。"""
+        if key == self._current_bgm:
+            return
+        self._current_bgm = key
+        path = self._config.get("bgm", {}).get(key, "")
+        if not path or not os.path.isfile(path):
+            return
+        try:
+            pygame.mixer.music.load(path)
+            if self._bgm_enabled:
+                pygame.mixer.music.play(-1)
+            else:
+                pygame.mixer.music.play(-1)
+                pygame.mixer.music.pause()
+        except pygame.error:
+            pass
+
+    def stop_bgm(self) -> None:
+        self._current_bgm = None
+        try:
+            pygame.mixer.music.stop()
+        except pygame.error:
+            pass
+
+    def set_bgm_enabled(self, enabled: bool) -> None:
+        self._bgm_enabled = enabled
+        try:
+            if enabled:
+                pygame.mixer.music.unpause()
+            else:
+                pygame.mixer.music.pause()
+        except pygame.error:
+            pass
+
+    def set_sfx_enabled(self, enabled: bool) -> None:
+        self._sfx_enabled = enabled
+
+    @property
+    def bgm_enabled(self) -> bool:
+        return self._bgm_enabled
+
+    @property
+    def sfx_enabled(self) -> bool:
+        return self._sfx_enabled
 
     # --- フォント ---
 

@@ -28,6 +28,9 @@ def main():
     play_screen = PlayScreen(assets)
     result_screen = ResultScreen(assets)
 
+    # 起動時にBGM再生開始
+    assets.play_bgm("opening")
+
     running = True
     while running:
         dt_ms = clock.get_time()
@@ -41,6 +44,7 @@ def main():
                 if start_screen.handle_event(event):
                     play_screen.start()
                     game.go_to_playing()
+                    assets.play_bgm("playing")
             elif game.state == GameState.PLAYING:
                 result = play_screen.handle_event(event)
                 if result in ("done", "timeout"):
@@ -56,12 +60,15 @@ def main():
                         score_result=score_result,
                     )
                     game.go_to_result()
+                    assets.play_bgm("ending")
                 elif result == "back":
                     game.go_to_start()
+                    assets.play_bgm("opening")
             elif game.state == GameState.RESULT:
                 result = result_screen.handle_event(event)
                 if result == "back":
                     game.go_to_start()
+                    assets.play_bgm("opening")
 
         # --- 更新 ---
         if game.state == GameState.PLAYING:
@@ -78,6 +85,7 @@ def main():
                     score_result=score_result,
                 )
                 game.go_to_result()
+                assets.play_bgm("ending")
 
         # --- 描画 ---
         if game.state == GameState.START:

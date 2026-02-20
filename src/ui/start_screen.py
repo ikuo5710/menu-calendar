@@ -6,6 +6,7 @@ import pygame
 
 from src.asset_manager import AssetManager
 from src.ui.button import Button
+from src.ui.toggle_switch import ToggleSwitch
 from src.constants import (
     SCREEN_WIDTH,
     SCREEN_HEIGHT,
@@ -50,6 +51,15 @@ class StartScreen:
         self._font_emoji = self._load_emoji_font(36)
         self._font_emoji_small = self._load_emoji_font(20)
 
+        # トグルスイッチ
+        toggle_font = assets.get_font(14)
+        self._bgm_toggle = ToggleSwitch(
+            SCREEN_WIDTH - 220, 8, "BGM", toggle_font, initial=assets.bgm_enabled
+        )
+        self._sfx_toggle = ToggleSwitch(
+            SCREEN_WIDTH - 110, 8, "SFX", toggle_font, initial=assets.sfx_enabled
+        )
+
         # スタートボタン
         btn_w, btn_h = 280, 56
         btn_x = (SCREEN_WIDTH - btn_w) // 2
@@ -74,6 +84,13 @@ class StartScreen:
 
     def handle_event(self, event: pygame.event.Event) -> bool:
         """イベント処理。スタートボタンが押されたら True を返す。"""
+        bgm_state = self._bgm_toggle.handle_event(event)
+        if bgm_state is not None:
+            self.assets.set_bgm_enabled(bgm_state)
+        sfx_state = self._sfx_toggle.handle_event(event)
+        if sfx_state is not None:
+            self.assets.set_sfx_enabled(sfx_state)
+
         if self.start_button.handle_event(event):
             self.assets.play_sound("button_click")
             return True
@@ -96,6 +113,10 @@ class StartScreen:
 
         # --- フッター情報 ---
         self._draw_footer_info(surface, cx)
+
+        # --- トグルスイッチ ---
+        self._bgm_toggle.draw(surface)
+        self._sfx_toggle.draw(surface)
 
         # --- スタートボタン ---
         self.start_button.draw(surface)
