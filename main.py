@@ -1,5 +1,6 @@
 """献立表カレンダー作成ゲーム - エントリポイント"""
 
+import os
 import sys
 import pygame
 from src.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, TITLE
@@ -20,6 +21,11 @@ def main():
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption(TITLE)
+
+    icon_path = os.path.join(os.path.dirname(__file__), "assets", "icons", "app_icon.png")
+    if os.path.exists(icon_path):
+        icon = pygame.image.load(icon_path)
+        pygame.display.set_icon(icon)
     clock = pygame.time.Clock()
 
     assets = AssetManager()
