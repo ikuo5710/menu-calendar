@@ -246,7 +246,9 @@ class PlayScreen:
         counter = self._font_counter.render(counter_text, True, COLOR_COUNTER_TEXT)
         surface.blit(counter, (SCREEN_WIDTH - counter.get_width() - 20, 32))
 
-        # トグルスイッチ
+        # トグルスイッチ（他画面での変更を反映）
+        self._bgm_toggle.enabled = self.assets.bgm_enabled
+        self._sfx_toggle.enabled = self.assets.sfx_enabled
         self._bgm_toggle.draw(surface)
         self._sfx_toggle.draw(surface)
 

@@ -115,6 +115,8 @@ class StartScreen:
         self._draw_footer_info(surface, cx)
 
         # --- トグルスイッチ ---
+        self._bgm_toggle.enabled = self.assets.bgm_enabled
+        self._sfx_toggle.enabled = self.assets.sfx_enabled
         self._bgm_toggle.draw(surface)
         self._sfx_toggle.draw(surface)
 

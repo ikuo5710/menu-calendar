@@ -41,6 +41,10 @@ class ToggleSwitch:
     def enabled(self) -> bool:
         return self._enabled
 
+    @enabled.setter
+    def enabled(self, value: bool) -> None:
+        self._enabled = value
+
     def handle_event(self, event: pygame.event.Event) -> bool | None:
         """クリックでトグル。状態変化時に新しい状態を返す。変化なしは None。"""
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
