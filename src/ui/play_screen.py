@@ -64,9 +64,10 @@ class PlayScreen:
         self._font_logo = assets.get_font(20)
         self._font_counter = assets.get_font(16)
         self._font_btn = assets.get_font(18)
-        self._font_rule_title = assets.get_font(11)
-        self._font_rule_desc = assets.get_font(10)
-        self._font_rule_num = assets.get_font(10)
+        self._font_rule_heading = assets.get_font(16)
+        self._font_rule_title = assets.get_font(14)
+        self._font_rule_desc = assets.get_font(12)
+        self._font_rule_num = assets.get_font(12)
         self._font_emoji = None
         try:
             self._font_emoji = pygame.font.SysFont("segoeUIemoji", 20)
@@ -269,11 +270,11 @@ class PlayScreen:
         panel_w = SCREEN_WIDTH - panel_x - 12
 
         # 見出し
-        heading = self._font_rule_title.render(
+        heading = self._font_rule_heading.render(
             "4つの約束", True, COLOR_ACCENT_ORANGE
         )
         surface.blit(heading, (panel_x + 4, panel_y))
-        card_y = panel_y + heading.get_height() + 6
+        card_y = panel_y + heading.get_height() + 8
 
         # 利用可能な高さからカード高さを計算
         footer_top = SCREEN_HEIGHT - 65
@@ -308,7 +309,7 @@ class PlayScreen:
 
         # 説明
         desc_surf = self._font_rule_desc.render(rule["desc"], True, COLOR_TEXT_SUB)
-        surface.blit(desc_surf, (title_x, y + pad + title_surf.get_height() + 3))
+        surface.blit(desc_surf, (title_x, y + pad + title_surf.get_height() + 6))
 
     def _draw_footer(self, surface: pygame.Surface) -> None:
         footer_rect = pygame.Rect(0, SCREEN_HEIGHT - 65, SCREEN_WIDTH, 65)
