@@ -301,6 +301,10 @@ class ResultScreen:
         avail_w = panel_rect.width - pad * 2
         avail_h = panel_rect.height - pad - (grid_top - panel_rect.y)
 
+        # 違反一覧のスペースを予約（両パネル統一サイズ）
+        penalty_reserve = 5 * 17 + 8
+        avail_h -= penalty_reserve
+
         # セルサイズを利用可能な領域に合わせて計算
         cell_w = (avail_w - _MINI_DAY_W - _MINI_GAP * (GRID_COLS - 1)) // GRID_COLS
         cell_h = (avail_h - _MINI_HEADER_H - _MINI_GAP * (GRID_ROWS - 1)) // GRID_ROWS
