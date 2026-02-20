@@ -182,13 +182,7 @@ class ResultScreen:
         # タイトル "けっか発表！"
         title = self._font_title.render("けっか発表！", True, COLOR_RESULT_TITLE)
         title_rect = title.get_rect(centerx=cx, top=8)
-        # トロフィーアイコン（テキストで代用）
-        trophy = self._font_title.render("★", True, COLOR_RESULT_TROPHY)
-        surface.blit(trophy, (title_rect.left - trophy.get_width() - 8, title_rect.top))
         surface.blit(title, title_rect)
-        surface.blit(
-            trophy, (title_rect.right + 8, title_rect.top)
-        )
 
         # スコア円
         circle_r = 40

@@ -307,9 +307,33 @@ class PlayScreen:
         title_surf = self._font_rule_title.render(rule["title"], True, rule["color"])
         surface.blit(title_surf, (title_x, y + pad + 1))
 
-        # 説明
-        desc_surf = self._font_rule_desc.render(rule["desc"], True, COLOR_TEXT_SUB)
-        surface.blit(desc_surf, (title_x, y + pad + title_surf.get_height() + 6))
+        # 説明（パネル幅に収まるよう折り返し）
+        desc_text = rule["desc"]
+        desc_y = y + pad + title_surf.get_height() + 6
+        max_desc_w = x + w - title_x - pad
+        self._draw_wrapped_text(
+            surface, desc_text, self._font_rule_desc, COLOR_TEXT_SUB,
+            title_x, desc_y, max_desc_w
+        )
+
+    def _draw_wrapped_text(
+        self, surface: pygame.Surface, text: str, font: pygame.font.Font,
+        color: tuple, x: int, y: int, max_w: int
+    ) -> None:
+        """テキストを max_w に収まるよう折り返して描画。"""
+        line = ""
+        for ch in text:
+            test = line + ch
+            if font.size(test)[0] > max_w and line:
+                surf = font.render(line, True, color)
+                surface.blit(surf, (x, y))
+                y += surf.get_height() + 2
+                line = ch
+            else:
+                line = test
+        if line:
+            surf = font.render(line, True, color)
+            surface.blit(surf, (x, y))
 
     def _draw_footer(self, surface: pygame.Surface) -> None:
         footer_rect = pygame.Rect(0, SCREEN_HEIGHT - 65, SCREEN_WIDTH, 65)

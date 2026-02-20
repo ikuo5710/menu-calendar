@@ -79,7 +79,7 @@ class Palette:
         pygame.draw.rect(surface, (230, 230, 230), bg_rect, width=1, border_radius=12)
 
         # 見出し
-        heading = self._font_heading.render("\U0001f37d\ufe0f メニュー", True, COLOR_ACCENT_ORANGE)
+        heading = self._font_heading.render("メニュー", True, COLOR_ACCENT_ORANGE)
         surface.blit(heading, (PALETTE_X + 14, PALETTE_Y + 10))
 
         # メニュー項目
